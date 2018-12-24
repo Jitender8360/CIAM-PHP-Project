@@ -43,12 +43,13 @@ function updateAccount(array $request) {
     $firstname = isset($request['firstname']) ? trim($request['firstname']) : '';
     $lastname = isset($request['lastname']) ? trim($request['lastname']) : '';
     $about = isset($request['about']) ? trim($request['about']) : '';
+   $ImageUrl = isset($request['ImageUrl']) ? trim($request['ImageUrl']) : '';
     $response = array('status' => 'error', 'message' => 'an error occoured');
-
+//echo ($request['token']);
     $authenticationObj = new UserAPI(API_KEY, API_SECRET, array('output_format' => 'json'));
     try {
-        $payload = array('FirstName' => $firstname, 'LastName' => $lastname, 'About' => $about);
-        $result = $authenticationObj->updateProfile($request['token'], $payload);
+        $payload = array('ImageUrl' => $ImageUrl,'FirstName' => $firstname, 'LastName' => $lastname, 'About' => $about);
+        $result = $authenticationObj->updateProfile($request['token'], $payload,$ImageUrl);
         if (isset($result->IsPosted) && $result->IsPosted) {
             $response['message'] = "Profile has been updated successfully.";
             $response['status'] = 'success';
