@@ -19,8 +19,16 @@ $(function () {
                            var emailId = localStorage.getItem("EmailId");
                            var username = localStorage.getItem("UserName");
                            var lastlogintime = localStorage.getItem("LastLoginTime");
+                           var ImageURL = localStorage.getItem("ImageUrl");
+                           var about = localStorage.getItem("about");
                            if(username!= "" && username != null){
                                 jQuery('.lr-user-name').text(username);
+                           }
+                           if(ImageURL!= "" && ImageURL != null){
+                                $( '.ProfileImg').attr("src",ImageURL);
+                           }
+                           if(about!= "" && about != null){
+                                jQuery('.lr-about').text(about);
                            }
                            jQuery('.emailid').text(emailId);
                            jQuery('.useruid').text(lruid);
@@ -135,6 +143,7 @@ function getProfileByUid() {
             action: "getProfileByUid"
         }),
         success: function (response) {
+          console.log(response);
             if (response.status == "success") {
                 if (typeof (response.data.FirstName) != "undefined" && response.data.FirstName !== null) {
                    $("#user-updateaccount-firstname").val(response.data.FirstName);  
@@ -145,7 +154,12 @@ function getProfileByUid() {
                     localStorage.setItem('UserName', response.data.FullName);
                 }
                 if (typeof (response.data.About) != "undefined" && response.data.About !== null) {
-                   $("#user-updateaccount-about").val(response.data.About);                
+                   $("#user-updateaccount-about").val(response.data.About);      
+                  localStorage.setItem('about', response.data.About);
+                }
+                if (typeof (response.data.ImageUrl) != "undefined" && response.data.ImageUrl !== null) {
+                   $("#user-updateaccount-ImageURL").val(response.data.ImageUrl);  
+                  localStorage.setItem('ImageUrl', response.data.ImageUrl);
                 }
             } 
         }
@@ -156,7 +170,7 @@ function handleUpdateAccount() {
     $('#btn-user-updateaccount').on('click', function () {
         $("#user-updateaccount-errorMsg").text("");
         $("#user-updateaccount-successMsg").text("");
-
+//alert($("#user-updateaccount-ImageURL").val());
        
         $.ajax({
             type: "POST",
@@ -167,6 +181,7 @@ function handleUpdateAccount() {
                 firstname: $("#user-updateaccount-firstname").val(),
                 lastname: $("#user-updateaccount-lastname").val(),
                 about: $("#user-updateaccount-about").val(),
+              ImageUrl: $("#user-updateaccount-ImageURL").val(),
                 action: "updateAccount"
             }),
             success: function (res) {
@@ -176,7 +191,7 @@ function handleUpdateAccount() {
                 } else if (res.status == 'success') {
                     $("#user-updateaccount-successMsg").text(res.message);
                     getProfileByUid();
-                   window.location.href = "profile.php";
+                   
                 }
             },
             error: function (xhr, status, error) {
@@ -370,6 +385,7 @@ function handleLogout() {
         localStorage.setItem("UserName", "");
         localStorage.setItem("ImageUrl", "");
         localStorage.setItem("LastLoginTime", "");
+              localStorage.setItem("about", "");
     });
 }
 
